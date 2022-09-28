@@ -1,0 +1,20 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "com.miaxis.sm93m",
+  "variantName": "release",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "versionCode": 12,
+      "versionName": "1.1.2.20220819",
+      "outputFile": "SM-93M_Demo-V1.1.2.20220819.apk"
+    }
+  ],
+  "elementType": "File"
+}

@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="busy"
+            type="Boolean" />
+
+    </data>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="20dp">
+
+            <LinearLayout
+                android:id="@+id/ll_func5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_init"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="2dp"
+                    android:layout_weight="1"
+                    android:enabled="@{!busy}"
+                    android:text="@string/btn_init" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_alg_version"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="2dp"
+                    android:layout_weight="1"
+                    android:enabled="@{!busy}"
+                    android:text="@string/btn_alg_version" />
+
+                <!--            <androidx.appcompat.widget.AppCompatButton-->
+                <!--                android:id="@+id/btn_deleteTemplate"-->
+                <!--                android:layout_width="0dp"-->
+                <!--                android:layout_height="wrap_content"-->
+                <!--                android:layout_margin="2dp"-->
+                <!--                android:layout_weight="1"-->
+                <!--                android:enabled="@{!busy}"-->
+                <!--                android:text="@string/btn_delete_mb" />-->
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_func6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_fingerprintArea"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="2dp"
+                    android:layout_weight="1"
+                    android:enabled="@{!busy}"
+                    android:text="@string/btn_fingerprint_area"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_imageQuality"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="2dp"
+                    android:layout_weight="1"
+                    android:enabled="@{!busy}"
+                    android:text="@string/btn_image_quality" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_nfiqScore"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="2dp"
+                    android:layout_weight="1"
+                    android:enabled="@{!busy}"
+                    android:text="@string/btn_nfiq_score" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_position"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="@string/text_user_id"
+                    android:textColor="#555"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/et_position"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="@{!busy}"
+                    android:hint="@string/hint_flash_user_count"
+                    android:imeOptions="actionDone"
+                    android:inputType="number"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_func3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_enrollTemplate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="2dp"
+                    android:layout_weight="1"
+                    android:enabled="@{!busy}"
+                    android:text="@string/btn_down_mb" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_matchTemplate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="2dp"
+                    android:layout_weight="1"
+                    android:enabled="@{!busy}"
+                    android:text="@string/btn_match_finger" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_deleteTemplate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="2dp"
+                    android:layout_weight="1"
+                    android:enabled="@{!busy}"
+                    android:text="@string/btn_delete_mb" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_func4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_showTemplate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="2dp"
+                    android:layout_weight="1"
+                    android:enabled="@{!busy}"
+                    android:text="@string/btn_show_template"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_clearTemplate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="2dp"
+                    android:layout_weight="1"
+                    android:enabled="@{!busy}"
+                    android:text="@string/btn_clear_mb" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_searchTemplate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="2dp"
+                    android:layout_weight="1"
+                    android:enabled="@{!busy}"
+                    android:text="@string/btn_search" />
+
+            </LinearLayout>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/titleFIR"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/title_fir"
+                    android:textColor="#000"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <RadioGroup
+                    android:id="@+id/FIRTypeGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/algWSQ"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
+                        android:checked="true"
+                        android:enabled="@{!busy}"
+                        android:text="@string/text_wsq"
+                        android:textColor="#000" />
+
+                    <RadioButton
+                        android:id="@+id/algJPEG"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
+                        android:enabled="@{!busy}"
+                        android:text="@string/text_jpeg2k"
+                        android:textColor="#000" />
+
+                </RadioGroup>
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+            <LinearLayout
+                android:id="@+id/ll_func8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <!--                <androidx.appcompat.widget.AppCompatButton-->
+                <!--                    android:id="@+id/btn_jpeg2kUnCompress"-->
+                <!--                    android:layout_width="0dp"-->
+                <!--                    android:layout_height="match_parent"-->
+                <!--                    android:layout_margin="2dp"-->
+                <!--                    android:layout_weight="1"-->
+                <!--                    android:enabled="@{!busy}"-->
+                <!--                    android:text="@string/btn_jpeg2k_uncompress"-->
+                <!--                    app:layout_constraintTop_toTopOf="parent" />-->
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_makeFir"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="2dp"
+                    android:layout_weight="1"
+                    android:enabled="@{!busy}"
+                    android:text="@string/btn_make_fir" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_unMakeFir"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="2dp"
+                    android:layout_weight="1"
+                    android:enabled="@{!busy}"
+                    android:text="@string/btn_unmake_fir" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/titleWSQ"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="6dp"
+                android:text="WSQ"
+                android:textColor="#000"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/WSQLine" />
+
+            <LinearLayout
+                android:id="@+id/ll_func7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_wsqCompress"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="2dp"
+                    android:layout_weight="1"
+                    android:enabled="@{!busy}"
+                    android:text="@string/btn_wsq_compress"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_wsqUnCompress"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="2dp"
+                    android:layout_weight="1"
+                    android:enabled="@{!busy}"
+                    android:text="@string/btn_wsq_uncompress" />
+
+                <!--                <androidx.appcompat.widget.AppCompatButton-->
+                <!--                    android:id="@+id/btn_jpeg2kCompress"-->
+                <!--                    android:layout_width="0dp"-->
+                <!--                    android:layout_height="match_parent"-->
+                <!--                    android:layout_margin="2dp"-->
+                <!--                    android:layout_weight="1"-->
+                <!--                    android:enabled="@{!busy}"-->
+                <!--                    android:text="@string/btn_jpeg2k_compress" />-->
+
+            </LinearLayout>
+
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.core.widget.NestedScrollView>
+</layout>

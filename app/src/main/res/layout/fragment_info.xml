@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="onClickListener"
+            type="android.view.View.OnClickListener" />
+
+        <variable
+            name="viewModel"
+            type="com.miaxis.sm93m.MainViewModel" />
+
+    </data>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_nfiq"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:enabled="@{viewModel.opened &amp;&amp; !viewModel.busy}"
+                android:onClick="@{onClickListener}"
+                android:text="@string/btn_nfiq"
+                android:textAllCaps="false"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/btn_minutae"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_minutae"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:enabled="@{viewModel.opened &amp;&amp; !viewModel.busy}"
+                android:onClick="@{onClickListener}"
+                android:text="@string/btn_minutae"
+                android:textAllCaps="false"
+                app:layout_constraintLeft_toRightOf="@id/btn_nfiq"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_sdk_version"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:enabled="@{viewModel.opened &amp;&amp; !viewModel.busy}"
+                android:onClick="@{onClickListener}"
+                android:text="@string/btn_sdk_version"
+                android:textAllCaps="false"
+                app:layout_constraintLeft_toLeftOf="@id/btn_nfiq"
+                app:layout_constraintRight_toLeftOf="@id/btn_algorithm_version"
+                app:layout_constraintTop_toBottomOf="@id/btn_nfiq" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_algorithm_version"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:enabled="@{viewModel.opened &amp;&amp; !viewModel.busy}"
+                android:onClick="@{onClickListener}"
+                android:text="@string/btn_algorithm_version"
+                android:textAllCaps="false"
+                app:layout_constraintLeft_toRightOf="@id/btn_sdk_version"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/btn_sdk_version" />
+
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_device_version"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:enabled="@{viewModel.opened &amp;&amp; !viewModel.busy}"
+                android:onClick="@{onClickListener}"
+                android:text="@string/btn_device_version"
+                android:textAllCaps="false"
+                app:layout_constraintLeft_toLeftOf="@id/btn_sdk_version"
+                app:layout_constraintRight_toLeftOf="@id/btn_live_alg_version"
+                app:layout_constraintTop_toBottomOf="@id/btn_sdk_version" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_live_alg_version"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:enabled="@{viewModel.opened &amp;&amp; !viewModel.busy}"
+                android:onClick="@{onClickListener}"
+                android:text="@string/btn_live_alg_version"
+                android:textAllCaps="false"
+                app:layout_constraintLeft_toRightOf="@id/btn_device_version"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/btn_device_version" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+</layout>

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <import type="com.miaxis.sm93m.DataBindingUtils" />
+
+        <variable
+            name="onClickListener"
+            type="android.view.View.OnClickListener" />
+
+        <variable
+            name="viewModel"
+            type="com.miaxis.sm93m.MainViewModel" />
+
+    </data>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp">
+
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/host_tv_title_template"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/text_template_Type"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="@id/host_tv_title_template"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/host_sp_template"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:enabled="@{viewModel.opened &amp;&amp; !viewModel.busy}"
+                android:entries="@array/template"
+                android:selectedItemPosition="@{viewModel.hostFeatureType}"
+                app:layout_constraintBottom_toBottomOf="@id/host_tv_title_template"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toRightOf="@id/host_tv_title_template"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/host_tv_title_template"
+                app:layout_constraintVertical_bias="0.4" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/host_tv_title_userId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_user_id"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/host_et_user_id"
+                app:layout_constraintLeft_toLeftOf="@id/host_tv_title_template"
+                app:layout_constraintTop_toTopOf="@+id/host_et_user_id" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/host_et_user_id"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:enabled="@{viewModel.opened &amp;&amp; !viewModel.busy}"
+                android:inputType="text"
+                android:text="@={viewModel.hostUserId}"
+                app:layout_constraintLeft_toRightOf="@id/host_tv_title_userId"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/host_sp_template" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/host_btn_enroll"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:enabled="@{viewModel.opened &amp;&amp; !viewModel.busy}"
+                android:onClick="@{onClickListener}"
+                android:text="@string/btn_enroll"
+                android:textAllCaps="false"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/host_btn_verify"
+                app:layout_constraintTop_toBottomOf="@id/host_et_user_id" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/host_btn_verify"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:enabled="@{viewModel.opened &amp;&amp; !viewModel.busy}"
+                android:onClick="@{onClickListener}"
+                android:text="@string/btn_verify"
+                android:textAllCaps="false"
+                app:layout_constraintBottom_toBottomOf="@id/host_btn_enroll"
+                app:layout_constraintLeft_toRightOf="@id/host_btn_enroll"
+                app:layout_constraintRight_toLeftOf="@+id/host_btn_search"
+                app:layout_constraintTop_toTopOf="@id/host_btn_enroll" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/host_btn_search"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:enabled="@{viewModel.opened &amp;&amp; !viewModel.busy}"
+                android:onClick="@{onClickListener}"
+                android:text="@string/btn_search"
+                android:textAllCaps="false"
+                app:layout_constraintBottom_toBottomOf="@id/host_btn_verify"
+                app:layout_constraintLeft_toRightOf="@id/host_btn_verify"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/host_btn_verify" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/host_btn_remove"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:enabled="@{viewModel.opened &amp;&amp; !viewModel.busy}"
+                android:onClick="@{onClickListener}"
+                android:text="@string/btn_remove"
+                android:textAllCaps="false"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/host_btn_clear"
+                app:layout_constraintTop_toBottomOf="@id/host_btn_enroll" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/host_btn_clear"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:enabled="@{viewModel.opened &amp;&amp; !viewModel.busy}"
+                android:onClick="@{onClickListener}"
+                android:text="@string/btn_clear"
+                android:textAllCaps="false"
+                app:layout_constraintBottom_toBottomOf="@id/host_btn_remove"
+                app:layout_constraintLeft_toRightOf="@id/host_btn_remove"
+                app:layout_constraintRight_toLeftOf="@+id/host_btn_db_show"
+                app:layout_constraintTop_toTopOf="@id/host_btn_remove" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/host_btn_db_show"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:enabled="@{viewModel.opened &amp;&amp; !viewModel.busy}"
+                android:onClick="@{onClickListener}"
+                android:text="@string/btn_db_show"
+                android:textAllCaps="false"
+                app:layout_constraintBottom_toBottomOf="@id/host_btn_clear"
+                app:layout_constraintLeft_toRightOf="@id/host_btn_clear"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/host_btn_clear" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.core.widget.NestedScrollView>
+</layout>

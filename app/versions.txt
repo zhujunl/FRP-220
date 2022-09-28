@@ -1,0 +1,63 @@
+----------------------------
+V1.1.2  zhukun 2022-08-19
+        1.fix upload a blank image after capture timeout
+
+----------------------------
+V1.1.1  zhukun 2022-08-19
+        1.update mosip
+
+----------------------------
+V1.1.0  zhukun 2022-08-17
+        1.fix errors in mosip
+
+----------------------------
+V1.0.9  zhukun 2022-08-12
+        1.fix baud rate list
+
+----------------------------
+V1.0.8  zhukun 2022-08-09
+        1.newly added serial communication
+
+----------------------------
+V1.0.7  zhukun 2022-07-21
+        1.update so for LFD
+
+----------------------------
+V1.0.6  zhukun 2022-07-19
+        1.modify "NFIQ reject", "Area reject" error tips
+        2.capture remove live preview
+        3.update so for LFD and NFIQ
+        4.added "API Error Code Table.pdf"
+
+----------------------------
+V1.0.5  zhukun 2022-07-12
+        1.Capture function added "Instruction timeout" error tips
+        2.update MOSIP
+        3.added LFD ALG VERSION
+        4.update so for LFD and NFIQ
+        5.modify the communication encryption process
+
+----------------------------
+V1.0.4  zhukun 2022-06-23
+        1.new mosip module
+        2.added aes encryption for capture, upload, download of lower computer communication
+
+----------------------------
+V1.0.3  zhukun 2022-06-10
+        1.auth the algorithm when opening and free the algorithm when closing
+        2.video function displays the time of each algorithm
+        3.fix nfiqLevel does not take effect
+
+----------------------------
+V1.0.2  zhukun 2022-06-06
+        1.update so for LFD
+
+----------------------------
+V1.0.1  zhukun 2022-06-02
+        1.implement basic functions such as:open, close, detect finger, capture, video.
+        2.added enroll, verify, search, remove, clear, upload, download and other functions of the lower computer and the upper computer.
+        3.fingerprint algorithm.
+        4.template and photo export capabilities.
+        5.algorithms and lower computer information.
+
+----------------------------

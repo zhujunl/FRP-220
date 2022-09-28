@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.miaxis.sm93m.MainViewModel" />
+
+        <variable
+            name="onClickListener"
+            type="android.view.View.OnClickListener" />
+
+        <import type="android.view.View" />
+
+    </data>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp">
+
+            <RadioGroup
+                android:id="@+id/rg_type"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:checkedButton="@={viewModel.communicationTypeRadio}"
+                app:layout_constraintHorizontal_weight="6"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/rb_encrypted"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <RadioButton
+                    android:id="@+id/rb_usb"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:enabled="@{!viewModel.opened &amp;&amp; !viewModel.busy &amp;&amp; viewModel.firstInit}"
+                    android:text="@string/text_usb"
+                    android:textColor="#000"
+                    tools:checked="true" />
+
+                <RadioButton
+                    android:id="@+id/rb_uart"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:enabled="@{!viewModel.opened &amp;&amp; !viewModel.busy &amp;&amp; viewModel.firstInit}"
+                    android:text="@string/text_uart"
+                    android:textColor="#000" />
+
+            </RadioGroup>
+
+            <CheckBox
+                android:id="@+id/rb_encrypted"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:checked="@={viewModel.encrypted}"
+                android:enabled="false"
+                android:text="@string/text_encrypted"
+                android:textColor="#000"
+                app:layout_constraintHorizontal_weight="5"
+                app:layout_constraintLeft_toRightOf="@id/rg_type"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/rg_type" />
+
+            <CheckBox
+                android:id="@+id/rb_latent"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:checked="@={viewModel.latent}"
+                android:enabled="false"
+                android:text="@string/text_latent"
+                android:textColor="#000"
+                app:layout_constraintHorizontal_weight="3"
+                app:layout_constraintLeft_toLeftOf="@id/rg_type"
+                app:layout_constraintRight_toLeftOf="@id/rb_lfd"
+                app:layout_constraintTop_toBottomOf="@id/rg_type" />
+
+            <CheckBox
+                android:id="@+id/rb_lfd"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:checked="@={viewModel.lfd}"
+                android:enabled="@{viewModel.opened &amp;&amp; !viewModel.busy &amp;&amp; viewModel.communicationType != 1}"
+                android:text="@string/text_lfd"
+                android:textColor="#000"
+                app:layout_constraintHorizontal_weight="3"
+                app:layout_constraintLeft_toRightOf="@id/rb_latent"
+                app:layout_constraintRight_toLeftOf="@id/ll_nfiq"
+                app:layout_constraintTop_toTopOf="@id/rb_latent" />
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/ll_nfiq"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                app:layout_constraintHorizontal_weight="5"
+                app:layout_constraintLeft_toRightOf="@id/rb_lfd"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/rb_lfd">
+
+                <CheckBox
+                    android:id="@+id/rb_nfiq"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="@={viewModel.nfiq}"
+                    android:enabled="@{viewModel.opened &amp;&amp; !viewModel.busy &amp;&amp; viewModel.communicationType != 1}"
+                    android:text="@string/text_nfiq"
+                    android:textColor="#000" />
+
+                <androidx.appcompat.widget.AppCompatSpinner
+                    android:id="@+id/sp_nfiq"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:enabled="@{viewModel.opened &amp;&amp; !viewModel.busy &amp;&amp; viewModel.communicationType != 1}"
+                    android:entries="@array/data"
+                    android:selectedItemPosition="@={viewModel.nfiqLevel}" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/ll_com"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rb_latent">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_title_com"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:text="@string/text_com"
+                    android:textStyle="bold" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/et_com"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:enabled="@{!viewModel.opened &amp;&amp; !viewModel.busy}"
+                    android:text="@={viewModel.comPath}" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_title_baud_rate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:text="@string/text_baud_rate"
+                    android:textStyle="bold" />
+
+                <androidx.appcompat.widget.AppCompatSpinner
+                    android:id="@+id/et_baud_rate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:enabled="@{!viewModel.busy}"
+                    android:entries="@array/baud_rate"
+                    android:selectedItemPosition="@={viewModel.baudRate}" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_set_baud_rate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:enabled="@{viewModel.opened &amp;&amp; !viewModel.busy}"
+                android:onClick="@{onClickListener}"
+                android:text="@string/text_set_baud_rate"
+                app:layout_constraintLeft_toLeftOf="@id/rg_type"
+                app:layout_constraintRight_toLeftOf="@id/rb_lfd"
+                app:layout_constraintTop_toBottomOf="@id/ll_com" />
+
+            <RadioGroup
+                android:id="@+id/image_type"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:checkedButton="@={viewModel.imageSizeRadio}"
+                android:gravity="center"
+                android:orientation="horizontal"
+                app:layout_constraintLeft_toRightOf="@id/btn_set_baud_rate"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/btn_set_baud_rate"
+                app:layout_constraintBottom_toBottomOf="@id/btn_set_baud_rate">
+
+                <RadioButton
+                    android:id="@+id/rb_compressed"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:enabled="@{!viewModel.busy}"
+                    android:gravity="center|start"
+                    android:text="@string/text_compressed_l"
+                    android:textColor="#000"
+                    tools:checked="true" />
+
+                <RadioButton
+                    android:id="@+id/rb_uncompressed"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:enabled="@{!viewModel.busy}"
+                    android:gravity="center|start"
+                    android:text="@string/text_uncompressed_l"
+                    android:textColor="#000" />
+
+            </RadioGroup>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+</layout>

@@ -1,0 +1,176 @@
+<resources>
+    <string name="app_name">Miaxis_FPR_220</string>
+    <string name="text_log">Log</string>
+
+    <string name="text_device">Device</string>
+    <string name="text_info">Image Info</string>
+    <string name="text_template">Upload Template</string>
+    <string name="text_template_Type">Template Type: </string>
+    <string name="text_user_id">Input User Id: </string>
+    <string name="text_buffer_id">Input Buffer Id: </string>
+
+    <string name="text_image_Type">Image Type: </string>
+    <string name="text_fir_Type">Fir Type: </string>
+
+
+    <string name="title_device">Device</string>
+    <string name="title_finger">Finger</string>
+    <string name="title_module">Module</string>
+    <string name="title_host">Host</string>
+    <string name="title_tools">Tools</string>
+    <string name="title_fir">FIR (ISO 19794-4:2005)</string>
+
+
+    <string name="check_save">Auto Save</string>
+
+    <string name="text_com">COM  :</string>
+    <string name="text_com_default">/dev/ttyHSL1</string>
+    <string name="text_BAUDRATE">BAUDRATE</string>
+
+    <string name="text_detect_finger">Detect Finger</string>
+    <string name="text_sdk_version">SDK Version</string>
+    <string name="text_capture_finger">Capture Finger</string>
+    <string name="text_capture_finger_success">Capture Finger Success</string>
+
+    <string name="text_finger_image_size">Image Size</string>
+
+    <string name="text_upload_image">Upload Image</string>
+    <string name="text_device_version">Device Version:</string>
+    <string name="text_device_sn">Device SN:</string>
+    <string name="text_enroll_finger">Enroll Finger</string>
+    <string name="text_enroll_finger_success">Enroll Finger Success</string>
+
+    <string name="text_match_finger">Match Finger</string>
+    <string name="text_match_finger_success">Match Finger Success</string>
+
+    <string name="text_delete_finger">Delete Finger</string>
+    <string name="text_delete_finger_success">Delete Finger Success</string>
+
+    <string name="text_clear_finger">Clear Template</string>
+    <string name="text_search_finger">Search Finger</string>
+    <string name="text_upload_finger">Upload Finger Template</string>
+    <string name="text_upload_finger_success">Upload Finger Template Success</string>
+
+    <string name="text_init_alg">Algorithm initialization</string>
+    <string name="text_init_alg_success">Algorithm initialization Success</string>
+    <string name="text_please_capture_finger">Please capture finger image first</string>
+    <string name="text_please_upload_template_or_show">Please upload template form module or show template first</string>
+
+    <string name="text_please_capture_or_upload">Please capture finger image or upload template form module first</string>
+
+    <string name="text_usb">USB</string>
+    <string name="text_uart">UART</string>
+    <string name="text_encrypted">Encrypted</string>
+    <string name="text_latent">Latent</string>
+    <string name="text_lfd">LFD</string>
+    <string name="text_nfiq">NFIQ</string>
+    <string name="text_set_baud_rate">Set BaudRate</string>
+    <string name="text_compressed">ImageSize\n(128*180)</string>
+    <string name="text_uncompressed">ImageSize\n(256*360)</string>
+    <string name="text_compressed_l">ImageSize(128*180)</string>
+    <string name="text_uncompressed_l">ImageSize(256*360)</string>
+
+
+    <string name="text_host">Host</string>
+    <string name="text_module">Module</string>
+
+
+    <string name="text_wsq">WSQ</string>
+    <string name="text_jpeg2k">JPEG2K</string>
+
+    <string name="text_finger_area">Fingerprint Area</string>
+    <string name="text_no_finger">No Fingerprint</string>
+
+    <string name="text_baud_rate">BAUDRATE:</string>
+    <string name="text_baud_rate_default">115200</string>
+    <string name="text_template_position">Template position:</string>
+    <string name="hint_flash_capacity_count" translatable="false">1~1000</string>
+    <string name="hint_flash_user_count" translatable="false">1~100000</string>
+
+    <string name="text_Alg_Handshake_Init">Algorithm Handshake Initialization</string>
+
+    <string name="text_open">Open Device</string>
+
+    <string name="button_open">Check Connected</string>
+    <string name="button_close">Close</string>
+    <string name="button_capture">Capture</string>
+    <string name="button_video">Video</string>
+    <string name="button_video_on">Stop</string>
+    <string name="button_video_off">Video</string>
+
+    <string name="button_device_sn">Device Sn</string>
+    <string name="button_device_version">Device Version</string>
+    <!--    <string name="button_device_sdk">SDK Version</string>-->
+
+    <string name="button_detect_finger">Detect Finger</string>
+    <string name="button_flash_capacity">capacity</string>
+
+    <string name="btn_match_finger">Match</string>
+    <string name="btn_delete_mb">delete</string>
+    <string name="btn_down_mb">enroll</string>
+    <string name="btn_upload_template">upload</string>
+    <string name="btn_show_template">show</string>
+    <string name="btn_fingerprint_area">Fingerprint Area</string>
+    <string name="btn_image_quality">Image Quality</string>
+    <string name="btn_nfiq_score">NFIQ Score</string>
+
+
+    <string name="btn_wsq_compress">WSQ Compress</string>
+    <string name="btn_wsq_uncompress">WSQ DeCompress</string>
+    <string name="btn_jpeg2k_compress">JPEG2K Compress</string>
+    <string name="btn_jpeg2k_uncompress">JPEG2K DeCompress</string>
+
+    <string name="btn_make_fir">Compress FIR</string>
+    <string name="btn_unmake_fir">DeCompress FIR</string>
+
+    <string name="btn_clear_mb">Clear</string>
+    <string name="btn_search">Search</string>
+
+    <string name="btn_init">Init</string>
+    <string name="btn_enroll">Enroll</string>
+    <string name="btn_verify">Verify</string>
+    <string name="btn_remove">Remove</string>
+    <string name="btn_clear">Clear</string>
+    <string name="btn_db_show">DB Show</string>
+    <string name="btn_upload">Upload</string>
+    <string name="btn_download">Download</string>
+    <string name="btn_capacity">Capacity</string>
+
+
+    <string name="btn_get_template_date">Get Template Data</string>
+    <string name="btn_get_image_date">Get Image Data</string>
+    <string name="btn_get_fir_date_2005">Get FIR Data(2005)</string>
+    <string name="btn_get_fir_date_2011">Get FIR Data(2011)</string>
+    <string name="btn_get_device_info">GetDeviceInfo</string>
+    <string name="btn_generate_key_pair">Generate Key Pair</string>
+    <string name="btn_read_ftm">ReadFTM</string>
+    <string name="btn_capture_compress">CaptureCompressEncryptAndSign</string>
+
+
+    <string name="btn_nfiq">NFIQ</string>
+    <string name="btn_minutae">MINUTAE</string>
+    <string name="btn_finger_residual_alg_version">RESIDUAL ALG VERSION</string>
+    <string name="btn_live_alg_version">LFD ALG VERSION</string>
+    <string name="btn_algorithm_version">ALG VERSION</string>
+    <string name="btn_device_sn">DEVICE SN</string>
+    <string name="btn_device_version">DEVICE VERSION</string>
+
+
+    <string name="btn_sdk_version">SDK VERSION</string>
+    <string name="btn_export_raw">Export Raw</string>
+    <string name="btn_export_bmp">Export BMP</string>
+    <string name="btn_export_template">Export Template</string>
+
+    <string name="btn_alg_version">Algorithm Version</string>
+    <string name="title_algorithm_activation">Algorithm Activation</string>
+    <string name="title_tips">Please activate before use</string>
+
+
+    <string name="message_input_template">Please input template position</string>
+
+
+    <string name="message_activation">Please input template position</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_active">Go activate</string>
+
+</resources>

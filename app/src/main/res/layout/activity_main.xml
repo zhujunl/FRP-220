@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="onClickListener"
+            type="android.view.View.OnClickListener" />
+
+        <variable
+            name="viewModel"
+            type="com.miaxis.sm93m.MainViewModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="3dp"
+        tools:context=".MainActivity">
+
+        <ProgressBar
+            android:id="@+id/pb_bar"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:visibility="@{viewModel.busy ? View.VISIBLE:View.INVISIBLE}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/v_line1"
+            app:layout_constraintTop_toBottomOf="@+id/pb_bar">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_finger"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginBottom="5dp"
+                android:background="#CCC"
+                android:padding="5dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_fingerprint"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="32:45"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_title_log"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:padding="3dp"
+                android:text="@string/text_log"
+                android:textColor="#333"
+                android:textSize="20sp"
+                android:textStyle="bold"
+
+                app:layout_constraintLeft_toRightOf="@+id/iv_finger"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/nsv_log"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginBottom="5dp"
+                android:background="#DDD"
+                android:padding="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="@+id/tv_title_log"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_title_log">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_log"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="@string/text_log"
+                    android:text="@{viewModel.log}" />
+
+            </androidx.core.widget.NestedScrollView>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:id="@+id/v_line1"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="#BBB"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.35" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_open"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:enabled="@{!viewModel.busy}"
+            android:onClick="@{onClickListener}"
+            android:text="@string/button_open"
+            android:textAllCaps="false"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/btn_detect_finger"
+            app:layout_constraintTop_toBottomOf="@id/v_line1" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_detect_finger"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:enabled="@{viewModel.opened &amp;&amp; !viewModel.busy}"
+            android:onClick="@{onClickListener}"
+            android:text="@string/button_detect_finger"
+            android:textAllCaps="false"
+            app:layout_constraintLeft_toRightOf="@id/btn_open"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/btn_open" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_capture"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:enabled="@{viewModel.opened &amp;&amp; !viewModel.busy}"
+            android:onClick="@{onClickListener}"
+            android:text="@string/button_capture"
+            android:textAllCaps="false"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/btn_video"
+            app:layout_constraintTop_toBottomOf="@id/btn_open" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_video"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:enabled="@{(viewModel.video || (viewModel.opened &amp;&amp; !viewModel.busy)) &amp;&amp; viewModel.communicationType != 1}"
+            android:onClick="@{onClickListener}"
+            android:text="@{viewModel.video? @string/button_video_on : @string/button_video_off}"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toBottomOf="@id/btn_capture"
+            app:layout_constraintLeft_toRightOf="@id/btn_capture"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/btn_capture" />
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tl_tab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@+id/btn_capture"
+            app:tabIndicatorColor="#FF108DE8"
+            app:tabMode="scrollable"
+            app:tabSelectedTextColor="#FF108DE8"
+            app:tabTextColor="#FFAEAEAE"
+
+            tools:background="#CCC"
+            tools:ignore="SpeakableTextPresentCheck"
+            tools:layout_editor_absoluteX="8dp"
+            tools:layout_height="30dp" />
+
+        <FrameLayout
+            android:id="@+id/fl_content"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tl_tab"
+            tools:background="#AAA" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
