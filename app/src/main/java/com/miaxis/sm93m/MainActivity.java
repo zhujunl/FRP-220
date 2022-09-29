@@ -39,6 +39,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import org.zz.jni.FingerLiveApi;
 import org.zz.jni.mxComFingerDriver;
 
 public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener, View.OnClickListener {
@@ -63,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         mBinding.setViewModel(mMainViewModel);
         mBinding.setLifecycleOwner(this);
 
+        FingerLiveApi.initAlg("");
         mMainViewModel.setJustouchApi(new JustouchFingerAPI());
         mMainViewModel.setContext(getApplicationContext());
 
@@ -96,10 +98,10 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         requestPermissions(this);
 
         //Power supply for Miaxis equipment
-        //Intent intent = new Intent("com.miaxis.power");
-        //intent.putExtra("type",0x12);
-        //intent.putExtra("value",true);
-        //sendBroadcast(intent);
+        Intent intent = new Intent("com.miaxis.power");
+        intent.putExtra("type",0x12);
+        intent.putExtra("value",true);
+        sendBroadcast(intent);
     }
 
     @Override
@@ -188,6 +190,8 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         super.onDestroy();
         unregisterReceiver();
         mFragments.clear();
+        FingerLiveApi.freeAlg();
+        mMainViewModel.getJustouchApi().free();
     }
 
     public void unregisterReceiver() {

@@ -91,7 +91,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:checked="@={viewModel.lfd}"
-                android:enabled="@{viewModel.opened &amp;&amp; !viewModel.busy &amp;&amp; viewModel.communicationType != 1}"
+                android:enabled="@{viewModel.opened &amp;&amp; !viewModel.busy}"
                 android:text="@string/text_lfd"
                 android:textColor="#000"
                 app:layout_constraintHorizontal_weight="3"
@@ -115,7 +115,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="@={viewModel.nfiq}"
-                    android:enabled="@{viewModel.opened &amp;&amp; !viewModel.busy &amp;&amp; viewModel.communicationType != 1}"
+                    android:enabled="@{viewModel.opened &amp;&amp; !viewModel.busy}"
                     android:text="@string/text_nfiq"
                     android:textColor="#000" />
 
@@ -123,7 +123,7 @@
                     android:id="@+id/sp_nfiq"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:enabled="@{viewModel.opened &amp;&amp; !viewModel.busy &amp;&amp; viewModel.communicationType != 1}"
+                    android:enabled="@{viewModel.opened &amp;&amp; !viewModel.busy}"
                     android:entries="@array/data"
                     android:selectedItemPosition="@={viewModel.nfiqLevel}" />
 
@@ -201,7 +201,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="3"
-                    android:enabled="@{!viewModel.busy}"
+                    android:enabled="false"
                     android:gravity="center|start"
                     android:text="@string/text_compressed_l"
                     android:textColor="#000"
@@ -212,7 +212,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="5"
-                    android:enabled="@{!viewModel.busy}"
+                    android:enabled="false"
                     android:gravity="center|start"
                     android:text="@string/text_uncompressed_l"
                     android:textColor="#000" />

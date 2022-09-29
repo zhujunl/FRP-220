@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModel;
 import com.miaxis.fingerprint.ISOANSI;
 import com.miaxis.justouch.JustouchFingerAPI;
 
+import org.zz.jni.FingerLiveApi;
 import org.zz.jni.mxComFingerDriver;
 
 import java.io.File;
@@ -119,6 +120,7 @@ public class MainViewModel extends ViewModel {
             if (result != 0) {
                 log.postValue("[SET BAUD RATE]\nFailed\nFAIL Code: " + result);
             } else {
+                baudRateOld = rate;
                 log.postValue("[SET BAUD RATE]\nSuccess");
             }
             busy.postValue(false);
@@ -136,20 +138,8 @@ public class MainViewModel extends ViewModel {
         });
     }
 
-    public void getFRAlgVersion() {
-        executor.execute(() -> {
-            //String result = mSm93MApi.getRFDAlgVersion();
-            //if (result != null) log.postValue("[FINGER RESIDUAL ALG VERSION]\nSuccess\n" + result);
-            //else log.postValue("[FINGER RESIDUAL ALG VERSION]\nFailed");
-        });
-    }
-
     public void getLiveAlgVersion() {
-        executor.execute(() -> {
-            //String result = mSm93MApi.getLFDAlgVersion();
-            //if (result != null) log.postValue("[FINGER LIVE ALG VERSION]\nSuccess\n" + result);
-            //else log.postValue("[FINGER LIVE ALG VERSION]\nFailed");
-        });
+        log.setValue("[FINGER LIVE ALG VERSION]\nSuccess\n" + FingerLiveApi.getAlgVersion());
     }
 
     public void getDeviceInfo() {
@@ -185,18 +175,6 @@ public class MainViewModel extends ViewModel {
         });
     }
 
-    public void getDeviceSerialNumber() {
-        log.setValue(null);
-        executor.execute(() -> {
-            //MxResult<String> result = mSm93MApi.getDeviceSerialNumber();
-            //if (result.isSuccess()) {
-            //    log.postValue("[DEVICE SERIAL NUMBER]\nSuccess\n" + result.getData());
-            //} else {
-            //    log.postValue("[DEVICE SERIAL NUMBER]\nFailed\n\n" + result.getCode() + "\n" + result.getMsg() + "\n" + result.getSw1());
-            //}
-        });
-    }
-
     private MxImage getImage() {
         String path = comPath.getValue();
         if (baudRate.getValue() == null || imageSizeRadio.getValue() == null)
@@ -207,7 +185,6 @@ public class MainViewModel extends ViewModel {
             int result = mFingerDriverApi.mxGetFingerImageWithCompression(path, rate, 5000, image);
             if (result == 0) {
                 MxImage mxImage = new MxImage(0, 128, 180, 1, image);
-                showFingerImage(mxImage);
                 return mxImage;
             } else {
                 return new MxImage(result, 0, 0, 0, null);
@@ -217,7 +194,6 @@ public class MainViewModel extends ViewModel {
             int result = mFingerDriverApi.mxGetFingerImage(path, rate, 5000, image);
             if (result == 0) {
                 MxImage mxImage = new MxImage(0, 256, 360, 1, image);
-                showFingerImage(mxImage);
                 return mxImage;
             } else {
                 return new MxImage(result, 0, 0, 0, null);
@@ -234,12 +210,40 @@ public class MainViewModel extends ViewModel {
             long startTime = System.currentTimeMillis();
             MxImage result = getImage();
             long endTime = System.currentTimeMillis();
-            busy.postValue(false);
             if (result.error == 0) {
+                if (nfiq.getValue() != null && nfiq.getValue() && nfiqLevel.getValue() != null) {
+                    int nfiq = mJustouchApi.getNFIQ(result.data, result.width, result.height);
+                    if (nfiq < 0){
+                        log.postValue("[CAPTURE]\nNFIQ Failed\nFAIL Code: " + nfiq);
+                        busy.postValue(false);
+                        return;
+                    }
+                    if (nfiq > nfiqLevel.getValue()){
+                        log.postValue("[CAPTURE]\nFailed\nNFIQ reject");
+                        busy.postValue(false);
+                        return;
+                    }
+                }
+                if (lfd.getValue() != null && lfd.getValue()) {
+                    int[] lfdResult = {0};
+                    int i = FingerLiveApi.fingerLiveWithLevel(result.data, result.width, result.height, 3, lfdResult);
+                    if (i != 0) {
+                        log.postValue("[CAPTURE]\nLFD Failed\nFAIL Code: " + i);
+                        busy.postValue(false);
+                        return;
+                    }
+                    if (lfdResult[0] == 0) {
+                        log.postValue("[CAPTURE]\nFailed\nLFD reject");
+                        busy.postValue(false);
+                        return;
+                    }
+                }
+                showFingerImage(result);
                 log.postValue("[CAPTURE]\nSuccess\nTime: " + (endTime - startTime) + "ms");
             } else {
                 log.postValue("[CAPTURE]\nFailed\nFAIL Code: " + result.error);
             }
+            busy.postValue(false);
         });
     }
 
@@ -530,7 +534,7 @@ public class MainViewModel extends ViewModel {
             byte[] templatesBytes = new byte[1024];
             short[] len = {(short) templatesBytes.length};
             int i2 = mFingerDriverApi.mxUpTz(path, rate, (short) 1, (short) position, templatesBytes, len);
-            if (i2 == 0){
+            if (i2 == 0) {
                 File file = new File(mContext.getExternalFilesDir(null), "MODULE");
                 if (!file.exists()) file.mkdirs();
                 boolean save = FileUtils.writeFeatureToFile(templatesBytes, file.getAbsolutePath(), "Type " + featureType.getValue() + " BufferId " + bufferId.getValue() + " feature.txt");
@@ -540,33 +544,6 @@ public class MainViewModel extends ViewModel {
             }
             busy.postValue(false);
         });
-    }
-
-    public void download() {
-        //executor.execute(() -> {
-        //    if (featureType.getValue() == null) return;
-        //    if (bufferId.getValue() == null) return;
-        //    byte[] feature = FileUtils.loadFileFeature(mContext.getExternalFilesDir(null).getPath() + "/MODULE/" + "Type " + featureType.getValue() + " BufferId " + bufferId.getValue() + " feature.txt");
-        //    if (feature == null || feature.length < 512) {
-        //        log.postValue("[DOWNLOAD]\nFail\nThe fingerprint feature file was not found");
-        //        return;
-        //    }
-        //    MxResult<Boolean> result;
-        //    if (Boolean.TRUE.equals(encrypted.getValue())) {
-        //        CaptureConfig uploadConfig = new CaptureConfig.Builder()
-        //                .setAESConfig(new AESConfig.Builder().setKey("1234567890123456").setMode("ECB").setPadding("PKCS5Padding").build())
-        //                .setAESStatus(CaptureConfig.AES_DEVICE)
-        //                .build();
-        //        result = mSm93MApi.downloadFeature(1, bufferId.getValue(), featureType.getValue(), feature, uploadConfig);
-        //    } else {
-        //        result = mSm93MApi.downloadFeature(1, bufferId.getValue(), featureType.getValue(), feature);
-        //    }
-        //    if (result.isSuccess()) {
-        //        log.postValue("[DOWNLOAD]\nSuccess");
-        //    } else {
-        //        log.postValue(transform("[DOWNLOAD]\nFail", result));
-        //    }
-        //});
     }
 
     public void hostEnroll() {
