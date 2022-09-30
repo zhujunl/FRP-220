@@ -132,10 +132,9 @@ public class MainViewModel extends ViewModel {
     }
 
     public void getSDKVersion() {
-        executor.execute(() -> {
-            //String result = mSm93MApi.getSDKVersion();
-            //log.postValue("[SDK VERSION]\nSuccess\n" + result);
-        });
+        byte[] bytes = new byte[100];
+        mFingerDriverApi.mxGetComDriverVersion(bytes);
+        log.postValue("[SDK VERSION]\nSuccess\n" + new String(bytes));
     }
 
     public void getLiveAlgVersion() {
@@ -213,12 +212,12 @@ public class MainViewModel extends ViewModel {
             if (result.error == 0) {
                 if (nfiq.getValue() != null && nfiq.getValue() && nfiqLevel.getValue() != null) {
                     int nfiq = mJustouchApi.getNFIQ(result.data, result.width, result.height);
-                    if (nfiq < 0){
+                    if (nfiq < 0) {
                         log.postValue("[CAPTURE]\nNFIQ Failed\nFAIL Code: " + nfiq);
                         busy.postValue(false);
                         return;
                     }
-                    if (nfiq > nfiqLevel.getValue()){
+                    if (nfiq > nfiqLevel.getValue()) {
                         log.postValue("[CAPTURE]\nFailed\nNFIQ reject");
                         busy.postValue(false);
                         return;
@@ -297,7 +296,6 @@ public class MainViewModel extends ViewModel {
             video.postValue(false);
         }
     }
-
 
     private void showFingerImage(MxImage mxImage) {
         if (mxImage == null) {
@@ -555,123 +553,72 @@ public class MainViewModel extends ViewModel {
         }
         assert userIdValue != null;
         final String userId = userIdValue.trim();
-        //executor.execute(() -> {
-        //    if (bufferId.getValue() == null) bufferId.postValue(0);
-        //
-        //    log.postValue("[HOST ENROLL]\nPlease wait...");
-        //    busy.postValue(true);
-        //    bm.postValue(null);
-        //    templateMxImage = null;
-        //    long start = System.currentTimeMillis();
-        //    MxResult<MxImage> getImage = getImage();
-        //    long getImageEndTime = System.currentTimeMillis();
-        //    if (!getImage.isSuccess()) {
-        //        log.postValue(transform("[HOST ENROLL]\nFail", getImage));
-        //        busy.postValue(false);
-        //        return;
-        //    }
-        //    byte[] tempFeature = new byte[DiskTemplates.TEMPLATE_LENGTH];
-        //    int[] templateLength = new int[1];
-        //    int result = createTemplate(getImage.getData().data, getImage.getData().width, getImage.getData().height, tempFeature, templateLength);
-        //    if (result < 0) {
-        //        log.postValue("[HOST ENROLL]\nFail\nGet new template failed!\nCode : " + result);
-        //        busy.postValue(false);
-        //        return;
-        //    }
-        //    int index = searchTemplates(tempFeature, mDiskTemplates.count(), mDiskTemplates.getAll());
-        //    long timeEnd = System.currentTimeMillis();
-        //    if (index >= 0) {
-        //        String userIdTemp = mDiskTemplates.getId(index);
-        //        log.postValue("[HOST ENROLL]\nFail\nThe fingerprint has been enrolled , Id is : " + userIdTemp);
-        //        busy.postValue(false);
-        //        return;
-        //    }
-        //    boolean addToDbSuccess = mDiskTemplates.put(userId, Arrays.copyOf(tempFeature, templateLength[0]));
-        //    if (!addToDbSuccess) {
-        //        log.postValue("[HOST ENROLL]\nFail\nThe id has been enrolled , Please re-enter id");
-        //    } else {
-        //        log.postValue("[HOST ENROLL]\nSuccess\nid : " + userId + "\nCapture Time : " + (getImageEndTime - start) + "ms\nEnroll Time : " + (timeEnd - getImageEndTime) + "ms");
-        //    }
-        //    busy.postValue(false);
-        //});
-    }
+        executor.execute(() -> {
+            log.postValue("[HOST ENROLL]\nPlease wait...");
+            busy.postValue(true);
+            bm.postValue(null);
+            templateMxImage = null;
+            long startTime = System.currentTimeMillis();
+            MxImage getImage = getImage();
+            long getImageEndTime = System.currentTimeMillis();
+            if (getImage.error != 0) {
+                log.postValue("[HOST ENROLL]\nFailed\nFAIL Code: " + getImage.error);
+                busy.postValue(false);
+                return;
+            }
+            if (nfiq.getValue() != null && nfiq.getValue() && nfiqLevel.getValue() != null) {
+                int nfiq = mJustouchApi.getNFIQ(getImage.data, getImage.width, getImage.height);
+                if (nfiq < 0) {
+                    log.postValue("[HOST ENROLL]\nNFIQ Failed\nFAIL Code: " + nfiq);
+                    busy.postValue(false);
+                    return;
+                }
+                if (nfiq > nfiqLevel.getValue()) {
+                    log.postValue("[HOST ENROLL]\nFailed\nNFIQ reject");
+                    busy.postValue(false);
+                    return;
+                }
+            }
+            if (lfd.getValue() != null && lfd.getValue()) {
+                int[] lfdResult = {0};
+                int i = FingerLiveApi.fingerLiveWithLevel(getImage.data, getImage.width, getImage.height, 3, lfdResult);
+                if (i != 0) {
+                    log.postValue("[HOST ENROLL]\nLFD Failed\nFAIL Code: " + i);
+                    busy.postValue(false);
+                    return;
+                }
+                if (lfdResult[0] == 0) {
+                    log.postValue("[HOST ENROLL]\nFailed\nLFD reject");
+                    busy.postValue(false);
+                    return;
+                }
+            }
+            showFingerImage(getImage);
+            byte[] tempFeature = new byte[DiskTemplates.TEMPLATE_LENGTH];
+            int[] templateLength = new int[1];
+            int result = createTemplate(getImage.data, getImage.width, getImage.height, tempFeature, templateLength);
+            if (result < 0) {
+                log.postValue("[HOST ENROLL]\nFail\nGet new template failed!\nCode : " + result);
+                busy.postValue(false);
+                return;
+            }
+            int index = searchTemplates(tempFeature, mDiskTemplates.count(), mDiskTemplates.getAll());
+            long timeEnd = System.currentTimeMillis();
+            if (index >= 0) {
+                String userIdTemp = mDiskTemplates.getId(index);
+                log.postValue("[HOST ENROLL]\nFail\nThe fingerprint has been enrolled , Id is : " + userIdTemp);
+                busy.postValue(false);
+                return;
+            }
+            boolean addToDbSuccess = mDiskTemplates.put(userId, Arrays.copyOf(tempFeature, templateLength[0]));
+            if (!addToDbSuccess) {
+                log.postValue("[HOST ENROLL]\nFail\nThe id has been enrolled , Please re-enter id");
+            } else {
+                log.postValue("[HOST ENROLL]\nSuccess\nid : " + userId + "\nCapture Time : " + (getImageEndTime - startTime) + "ms\nEnroll Time : " + (timeEnd - getImageEndTime) + "ms");
+            }
 
-    public void hostEnrollForSerialPort() {
-        String userIdValue = hostUserId.getValue();
-        if (TextUtils.isEmpty(userIdValue)) {
-            log.postValue("[HOST ENROLL]\nFail\nPlease input your id");
             busy.postValue(false);
-            return;
-        }
-        assert userIdValue != null;
-        final String userId = userIdValue.trim();
-        //executor.execute(() -> {
-        //    if (bufferId.getValue() == null) bufferId.postValue(0);
-        //
-        //    log.postValue("[HOST ENROLL]\nPlease wait...");
-        //    busy.postValue(true);
-        //    bm.postValue(null);
-        //    templateMxImage = null;
-        //    long start = System.currentTimeMillis();
-        //    MxResult<MxImage> getImage = getImage();
-        //    long getImageEndTime = System.currentTimeMillis();
-        //    if (!getImage.isSuccess()) {
-        //        log.postValue(transform("[HOST ENROLL]\nFail", getImage));
-        //        busy.postValue(false);
-        //        return;
-        //    }
-        //
-        //    MxResult<Boolean> enrollResult;
-        //    if (Boolean.TRUE.equals(encrypted.getValue())) {
-        //        CaptureConfig uploadConfig = new CaptureConfig.Builder()
-        //                .setAESConfig(new AESConfig.Builder().setKey("1234567890123456").setMode("ECB").setPadding("PKCS5Padding").build())
-        //                .setAESStatus(CaptureConfig.AES_DEVICE)
-        //                .build();
-        //        enrollResult = mSm93MApi.enroll(0, 0, false, uploadConfig);
-        //    } else {
-        //        enrollResult = mSm93MApi.enroll(0, 0, false);
-        //    }
-        //    if (!enrollResult.isSuccess()){
-        //        log.postValue("[HOST ENROLL]\nFail\nGet new template failed!\nCode : " + enrollResult.getCode());
-        //        busy.postValue(false);
-        //        return;
-        //    }
-        //    MxResult<byte[]> result;
-        //    if (Boolean.TRUE.equals(encrypted.getValue())) {
-        //        CaptureConfig uploadConfig = new CaptureConfig.Builder()
-        //                .setAESConfig(new AESConfig.Builder().setKey("1234567890123456").setMode("ECB").setPadding("PKCS5Padding").build())
-        //                .setAESStatus(CaptureConfig.AES_DEVICE)
-        //                .build();
-        //        result = mSm93MApi.uploadFeature(0, 0, featureType.getValue(), uploadConfig);
-        //    } else {
-        //        result = mSm93MApi.uploadFeature(0, 0, featureType.getValue());
-        //    }
-        //    if (!result.isSuccess()){
-        //        log.postValue("[HOST ENROLL]\nFail\nupload template failed!\nCode : " + result.getCode());
-        //        busy.postValue(false);
-        //        return;
-        //    }
-        //
-        //    byte[] tempFeature = result.getData();
-        //    int[] templateLength = new int[1];
-        //    templateLength[0] = tempFeature.length;
-        //
-        //    int index = searchTemplates(tempFeature, mDiskTemplates.count(), mDiskTemplates.getAll());
-        //    long timeEnd = System.currentTimeMillis();
-        //    if (index >= 0) {
-        //        String userIdTemp = mDiskTemplates.getId(index);
-        //        log.postValue("[HOST ENROLL]\nFail\nThe fingerprint has been enrolled , Id is : " + userIdTemp);
-        //        busy.postValue(false);
-        //        return;
-        //    }
-        //    boolean addToDbSuccess = mDiskTemplates.put(userId, Arrays.copyOf(tempFeature, templateLength[0]));
-        //    if (!addToDbSuccess) {
-        //        log.postValue("[HOST ENROLL]\nFail\nThe id has been enrolled , Please re-enter id");
-        //    } else {
-        //        log.postValue("[HOST ENROLL]\nSuccess\nid : " + userId + "\nCapture Time : " + (getImageEndTime - start) + "ms\nEnroll Time : " + (timeEnd - getImageEndTime) + "ms");
-        //    }
-        //    busy.postValue(false);
-        //});
+        });
     }
 
     public void hostVerify() {
@@ -687,218 +634,133 @@ public class MainViewModel extends ViewModel {
             log.postValue("[HOST VERIFY]\nFail\nReason : Not found id : " + userId);
             return;
         }
-        //executor.execute(() -> {
-        //    if (bufferId.getValue() == null) bufferId.postValue(0);
-        //    log.postValue("[HOST VERIFY]\nPlease wait...");
-        //    busy.postValue(true);
-        //    bm.postValue(null);
-        //    templateMxImage = null;
-        //    long start = System.currentTimeMillis();
-        //    MxResult<MxImage> getImage = getImage();
-        //    long getImageEndTime = System.currentTimeMillis();
-        //    if (!getImage.isSuccess()) {
-        //        log.postValue(transform("[HOST VERIFY]\nFail", getImage));
-        //        busy.postValue(false);
-        //        return;
-        //    }
-        //    byte[] tempFeature = new byte[DiskTemplates.TEMPLATE_LENGTH];
-        //    Log.d(TAG, "hostVerify createTemplate start");
-        //    int result = createTemplate(getImage.getData().data, getImage.getData().width, getImage.getData().height, tempFeature, null);
-        //    Log.d(TAG, "hostVerify createTemplate end");
-        //    if (result < 0) {
-        //        log.postValue("[HOST VERIFY]\nFail\nGet new template failed!\nCode : " + result);
-        //        busy.postValue(false);
-        //        return;
-        //    }
-        //    Log.d(TAG, "hostVerify compareTemplates start");
-        //    int score = compareTemplates(selectTemplate, tempFeature);
-        //    Log.d(TAG, "hostVerify compareTemplates end");
-        //    long timeEnd = System.currentTimeMillis();
-        //
-        //    if (score >= 45) {
-        //        log.postValue("[HOST VERIFY]\nSuccess\nSimilar score : " + score + "\nCapture Time : " + (getImageEndTime - start) + "ms\nVerify Time : " + (timeEnd - getImageEndTime) + "ms");
-        //    } else if (score >= 0) {
-        //        log.postValue("[HOST VERIFY]\nFailed\nSimilar score : " + score + "\nCapture Time : " + (getImageEndTime - start) + "ms\nVerify Time : " + (timeEnd - getImageEndTime) + "ms");
-        //    } else {
-        //        log.postValue("[HOST VERIFY]\nError\nCode : " + score + "\nTime : " + (timeEnd - start) + "ms");
-        //    }
-        //    busy.postValue(false);
-        //});
-    }
+        executor.execute(() -> {
+            if (bufferId.getValue() == null) bufferId.postValue(0);
+            log.postValue("[HOST VERIFY]\nPlease wait...");
+            busy.postValue(true);
+            bm.postValue(null);
+            templateMxImage = null;
+            long start = System.currentTimeMillis();
+            MxImage getImage = getImage();
+            long getImageEndTime = System.currentTimeMillis();
+            if (getImage.error != 0) {
+                log.postValue("[HOST VERIFY]\nFail\nFAIL CODE: " + getImage.error);
+                busy.postValue(false);
+                return;
+            }
+            if (nfiq.getValue() != null && nfiq.getValue() && nfiqLevel.getValue() != null) {
+                int nfiq = mJustouchApi.getNFIQ(getImage.data, getImage.width, getImage.height);
+                if (nfiq < 0) {
+                    log.postValue("[HOST VERIFY]\nNFIQ Failed\nFAIL Code: " + nfiq);
+                    busy.postValue(false);
+                    return;
+                }
+                if (nfiq > nfiqLevel.getValue()) {
+                    log.postValue("[HOST VERIFY]\nFailed\nNFIQ reject");
+                    busy.postValue(false);
+                    return;
+                }
+            }
+            if (lfd.getValue() != null && lfd.getValue()) {
+                int[] lfdResult = {0};
+                int i = FingerLiveApi.fingerLiveWithLevel(getImage.data, getImage.width, getImage.height, 3, lfdResult);
+                if (i != 0) {
+                    log.postValue("[HOST VERIFY]\nLFD Failed\nFAIL Code: " + i);
+                    busy.postValue(false);
+                    return;
+                }
+                if (lfdResult[0] == 0) {
+                    log.postValue("[HOST VERIFY]\nFailed\nLFD reject");
+                    busy.postValue(false);
+                    return;
+                }
+            }
+            showFingerImage(getImage);
+            byte[] tempFeature = new byte[DiskTemplates.TEMPLATE_LENGTH];
+            Log.d(TAG, "hostVerify createTemplate start");
+            int result = createTemplate(getImage.data, getImage.width, getImage.height, tempFeature, null);
+            Log.d(TAG, "hostVerify createTemplate end");
+            if (result < 0) {
+                log.postValue("[HOST VERIFY]\nFail\nGet new template failed!\nCode : " + result);
+                busy.postValue(false);
+                return;
+            }
+            Log.d(TAG, "hostVerify compareTemplates start");
+            int score = compareTemplates(selectTemplate, tempFeature);
+            Log.d(TAG, "hostVerify compareTemplates end");
+            long timeEnd = System.currentTimeMillis();
 
-    public void hostVerifyForSerialPort() {
-        String userIdValue = hostUserId.getValue();
-        if (TextUtils.isEmpty(userIdValue)) {
-            log.postValue("[HOST VERIFY]\nFail\nPlease input your id");
-            return;
-        }
-        assert userIdValue != null;
-        final String userId = userIdValue.trim();
-        byte[] selectTemplate = mDiskTemplates.get(userId);
-        if (selectTemplate == null) {
-            log.postValue("[HOST VERIFY]\nFail\nReason : Not found id : " + userId);
-            return;
-        }
-        //executor.execute(() -> {
-        //    if (bufferId.getValue() == null) bufferId.postValue(0);
-        //    log.postValue("[HOST VERIFY]\nPlease wait...");
-        //    busy.postValue(true);
-        //    bm.postValue(null);
-        //    templateMxImage = null;
-        //    long start = System.currentTimeMillis();
-        //    MxResult<MxImage> getImage = getImage();
-        //    long getImageEndTime = System.currentTimeMillis();
-        //    if (!getImage.isSuccess()) {
-        //        log.postValue(transform("[HOST VERIFY]\nFail", getImage));
-        //        busy.postValue(false);
-        //        return;
-        //    }
-        //
-        //    MxResult<Boolean> enrollResult;
-        //    if (Boolean.TRUE.equals(encrypted.getValue())) {
-        //        CaptureConfig uploadConfig = new CaptureConfig.Builder()
-        //                .setAESConfig(new AESConfig.Builder().setKey("1234567890123456").setMode("ECB").setPadding("PKCS5Padding").build())
-        //                .setAESStatus(CaptureConfig.AES_DEVICE)
-        //                .build();
-        //        enrollResult = mSm93MApi.enroll(0, 0, false, uploadConfig);
-        //    } else {
-        //        enrollResult = mSm93MApi.enroll(0, 0, false);
-        //    }
-        //    if (!enrollResult.isSuccess()){
-        //        log.postValue("[HOST VERIFY]\nFail\nGet new template failed!\nCode : " + enrollResult.getCode());
-        //        busy.postValue(false);
-        //        return;
-        //    }
-        //    MxResult<byte[]> result;
-        //    if (Boolean.TRUE.equals(encrypted.getValue())) {
-        //        CaptureConfig uploadConfig = new CaptureConfig.Builder()
-        //                .setAESConfig(new AESConfig.Builder().setKey("1234567890123456").setMode("ECB").setPadding("PKCS5Padding").build())
-        //                .setAESStatus(CaptureConfig.AES_DEVICE)
-        //                .build();
-        //        result = mSm93MApi.uploadFeature(0, 0, featureType.getValue(), uploadConfig);
-        //    } else {
-        //        result = mSm93MApi.uploadFeature(0, 0, featureType.getValue());
-        //    }
-        //    if (!result.isSuccess()){
-        //        log.postValue("[HOST VERIFY]\nFail\nupload template failed!\nCode : " + result.getCode());
-        //        busy.postValue(false);
-        //        return;
-        //    }
-        //
-        //    byte[] tempFeature = result.getData();
-        //
-        //
-        //    Log.d(TAG, "hostVerify compareTemplates start");
-        //    int score = compareTemplates(selectTemplate, tempFeature);
-        //    Log.d(TAG, "hostVerify compareTemplates end");
-        //    long timeEnd = System.currentTimeMillis();
-        //
-        //    if (score >= 45) {
-        //        log.postValue("[HOST VERIFY]\nSuccess\nSimilar score : " + score + "\nCapture Time : " + (getImageEndTime - start) + "ms\nVerify Time : " + (timeEnd - getImageEndTime) + "ms");
-        //    } else if (score >= 0) {
-        //        log.postValue("[HOST VERIFY]\nFailed\nSimilar score : " + score + "\nCapture Time : " + (getImageEndTime - start) + "ms\nVerify Time : " + (timeEnd - getImageEndTime) + "ms");
-        //    } else {
-        //        log.postValue("[HOST VERIFY]\nError\nCode : " + score + "\nTime : " + (timeEnd - start) + "ms");
-        //    }
-        //    busy.postValue(false);
-        //});
+            if (score >= 45) {
+                log.postValue("[HOST VERIFY]\nSuccess\nSimilar score : " + score + "\nCapture Time : " + (getImageEndTime - start) + "ms\nVerify Time : " + (timeEnd - getImageEndTime) + "ms");
+            } else if (score >= 0) {
+                log.postValue("[HOST VERIFY]\nFailed\nSimilar score : " + score + "\nCapture Time : " + (getImageEndTime - start) + "ms\nVerify Time : " + (timeEnd - getImageEndTime) + "ms");
+            } else {
+                log.postValue("[HOST VERIFY]\nError\nCode : " + score + "\nTime : " + (timeEnd - start) + "ms");
+            }
+            busy.postValue(false);
+        });
     }
 
     public void hostSearch() {
-        //executor.execute(() -> {
-        //    if (bufferId.getValue() == null) bufferId.postValue(0);
-        //    log.postValue("[HOST SEARCH]\nPlease wait...");
-        //    busy.postValue(true);
-        //    bm.postValue(null);
-        //    templateMxImage = null;
-        //    long start = System.currentTimeMillis();
-        //    MxResult<MxImage> getImage = getImage();
-        //    long getImageEndTime = System.currentTimeMillis();
-        //    if (!getImage.isSuccess()) {
-        //        log.postValue(transform("[HOST SEARCH]\nFail", getImage));
-        //        busy.postValue(false);
-        //        return;
-        //    }
-        //    byte[] tempFeature = new byte[DiskTemplates.TEMPLATE_LENGTH];
-        //    int result = createTemplate(getImage.getData().data, getImage.getData().width, getImage.getData().height, tempFeature, null);
-        //    if (result < 0) {
-        //        log.postValue("[HOST SEARCH]\nFail\nGet new template failed!\nCode : " + result);
-        //        busy.postValue(false);
-        //        return;
-        //    }
-        //    int index = searchTemplates(tempFeature, mDiskTemplates.count(), mDiskTemplates.getAll());
-        //    long timeEnd = System.currentTimeMillis();
-        //    if (index >= 0) {
-        //        String id = mDiskTemplates.getId(index);
-        //        log.postValue("[HOST SEARCH]\nSuccess\nUser Id : " + id + "\nCapture Time : " + (getImageEndTime - start) + "ms\nSearch Time : " + (timeEnd - getImageEndTime) + "ms");
-        //    } else {
-        //        log.postValue("[HOST SEARCH]\nFailed\nThe finger is not enrolled\nCapture Time : " + (getImageEndTime - start) + "ms\nSearch Time : " + (timeEnd - getImageEndTime) + "ms");
-        //    }
-        //    busy.postValue(false);
-        //});
-    }
-
-    public void hostSearchForSerialPort() {
-        //executor.execute(() -> {
-        //    if (bufferId.getValue() == null) bufferId.postValue(0);
-        //    log.postValue("[HOST SEARCH]\nPlease wait...");
-        //    busy.postValue(true);
-        //    bm.postValue(null);
-        //    templateMxImage = null;
-        //    long start = System.currentTimeMillis();
-        //    MxResult<MxImage> getImage = getImage();
-        //    long getImageEndTime = System.currentTimeMillis();
-        //    if (!getImage.isSuccess()) {
-        //        log.postValue(transform("[HOST SEARCH]\nFail", getImage));
-        //        busy.postValue(false);
-        //        return;
-        //    }
-        //
-        //
-        //    MxResult<Boolean> enrollResult;
-        //    if (Boolean.TRUE.equals(encrypted.getValue())) {
-        //        CaptureConfig uploadConfig = new CaptureConfig.Builder()
-        //                .setAESConfig(new AESConfig.Builder().setKey("1234567890123456").setMode("ECB").setPadding("PKCS5Padding").build())
-        //                .setAESStatus(CaptureConfig.AES_DEVICE)
-        //                .build();
-        //        enrollResult = mSm93MApi.enroll(0, 0, false, uploadConfig);
-        //    } else {
-        //        enrollResult = mSm93MApi.enroll(0, 0, false);
-        //    }
-        //    if (!enrollResult.isSuccess()){
-        //        log.postValue("[HOST SEARCH]\nFail\nGet new template failed!\nCode : " + enrollResult.getCode());
-        //        busy.postValue(false);
-        //        return;
-        //    }
-        //    MxResult<byte[]> result;
-        //    if (Boolean.TRUE.equals(encrypted.getValue())) {
-        //        CaptureConfig uploadConfig = new CaptureConfig.Builder()
-        //                .setAESConfig(new AESConfig.Builder().setKey("1234567890123456").setMode("ECB").setPadding("PKCS5Padding").build())
-        //                .setAESStatus(CaptureConfig.AES_DEVICE)
-        //                .build();
-        //        result = mSm93MApi.uploadFeature(0, 0, featureType.getValue(), uploadConfig);
-        //    } else {
-        //        result = mSm93MApi.uploadFeature(0, 0, featureType.getValue());
-        //    }
-        //    if (!result.isSuccess()){
-        //        log.postValue("[HOST SEARCH]\nFail\nupload template failed!\nCode : " + result.getCode());
-        //        busy.postValue(false);
-        //        return;
-        //    }
-        //
-        //    byte[] tempFeature = result.getData();
-        //
-        //
-        //    int index = searchTemplates(tempFeature, mDiskTemplates.count(), mDiskTemplates.getAll());
-        //    long timeEnd = System.currentTimeMillis();
-        //    if (index >= 0) {
-        //        String id = mDiskTemplates.getId(index);
-        //        log.postValue("[HOST SEARCH]\nSuccess\nUser Id : " + id + "\nCapture Time : " + (getImageEndTime - start) + "ms\nSearch Time : " + (timeEnd - getImageEndTime) + "ms");
-        //    } else {
-        //        log.postValue("[HOST SEARCH]\nFailed\nThe finger is not enrolled\nCapture Time : " + (getImageEndTime - start) + "ms\nSearch Time : " + (timeEnd - getImageEndTime) + "ms");
-        //    }
-        //    busy.postValue(false);
-        //});
+        executor.execute(() -> {
+            if (bufferId.getValue() == null) bufferId.postValue(0);
+            log.postValue("[HOST SEARCH]\nPlease wait...");
+            busy.postValue(true);
+            bm.postValue(null);
+            templateMxImage = null;
+            long start = System.currentTimeMillis();
+            MxImage getImage = getImage();
+            long getImageEndTime = System.currentTimeMillis();
+            if (getImage.error != 0) {
+                log.postValue("[HOST SEARCH]\nFail\nFAIL CODE: " + getImage.error);
+                busy.postValue(false);
+                return;
+            }
+            if (nfiq.getValue() != null && nfiq.getValue() && nfiqLevel.getValue() != null) {
+                int nfiq = mJustouchApi.getNFIQ(getImage.data, getImage.width, getImage.height);
+                if (nfiq < 0) {
+                    log.postValue("[HOST SEARCH]\nNFIQ Failed\nFAIL Code: " + nfiq);
+                    busy.postValue(false);
+                    return;
+                }
+                if (nfiq > nfiqLevel.getValue()) {
+                    log.postValue("[HOST SEARCH]\nFailed\nNFIQ reject");
+                    busy.postValue(false);
+                    return;
+                }
+            }
+            if (lfd.getValue() != null && lfd.getValue()) {
+                int[] lfdResult = {0};
+                int i = FingerLiveApi.fingerLiveWithLevel(getImage.data, getImage.width, getImage.height, 3, lfdResult);
+                if (i != 0) {
+                    log.postValue("[HOST SEARCH]\nLFD Failed\nFAIL Code: " + i);
+                    busy.postValue(false);
+                    return;
+                }
+                if (lfdResult[0] == 0) {
+                    log.postValue("[HOST SEARCH]\nFailed\nLFD reject");
+                    busy.postValue(false);
+                    return;
+                }
+            }
+            showFingerImage(getImage);
+            byte[] tempFeature = new byte[DiskTemplates.TEMPLATE_LENGTH];
+            int result = createTemplate(getImage.data, getImage.width, getImage.height, tempFeature, null);
+            if (result < 0) {
+                log.postValue("[HOST SEARCH]\nFail\nGet new template failed!\nCode : " + result);
+                busy.postValue(false);
+                return;
+            }
+            int index = searchTemplates(tempFeature, mDiskTemplates.count(), mDiskTemplates.getAll());
+            long timeEnd = System.currentTimeMillis();
+            if (index >= 0) {
+                String id = mDiskTemplates.getId(index);
+                log.postValue("[HOST SEARCH]\nSuccess\nUser Id : " + id + "\nCapture Time : " + (getImageEndTime - start) + "ms\nSearch Time : " + (timeEnd - getImageEndTime) + "ms");
+            } else {
+                log.postValue("[HOST SEARCH]\nFailed\nThe finger is not enrolled\nCapture Time : " + (getImageEndTime - start) + "ms\nSearch Time : " + (timeEnd - getImageEndTime) + "ms");
+            }
+            busy.postValue(false);
+        });
     }
 
     private int compareTemplates(byte[] data, byte[] dataAnother) {

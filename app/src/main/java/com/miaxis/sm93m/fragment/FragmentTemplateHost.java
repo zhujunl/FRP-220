@@ -88,26 +88,11 @@ public class FragmentTemplateHost extends BaseBindingFragment<FragmentTemplateHo
     public void onClick(View v) {
         int id = v.getId();
         if (id == binding.hostBtnEnroll.getId()) {
-            if (mMainViewModel.communicationType.getValue() == null) return;
-            if (mMainViewModel.communicationType.getValue() == 0){
-                mMainViewModel.hostEnroll();
-            } else {
-                mMainViewModel.hostEnrollForSerialPort();
-            }
+            mMainViewModel.hostEnroll();
         } else if (id == binding.hostBtnVerify.getId()) {
-            if (mMainViewModel.communicationType.getValue() == null) return;
-            if (mMainViewModel.communicationType.getValue() == 0) {
-                mMainViewModel.hostVerify();
-            } else {
-                mMainViewModel.hostVerifyForSerialPort();
-            }
+            mMainViewModel.hostVerify();
         } else if (id == binding.hostBtnSearch.getId()) {
-            if (mMainViewModel.communicationType.getValue() == null) return;
-            if (mMainViewModel.communicationType.getValue() == 0) {
-                mMainViewModel.hostSearch();
-            } else {
-                mMainViewModel.hostSearchForSerialPort();
-            }
+            mMainViewModel.hostSearch();
         } else if (id == binding.hostBtnRemove.getId()) {
             mMainViewModel.hostRemove();
         } else if (id == binding.hostBtnClear.getId()) {
