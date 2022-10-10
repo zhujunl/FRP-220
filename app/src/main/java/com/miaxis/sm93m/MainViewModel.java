@@ -272,6 +272,7 @@ public class MainViewModel extends ViewModel {
                     long endTime = System.currentTimeMillis();
                     if (result.error != 0) {
                         if (result.error == -3 || result.error == -6) {
+                            showFingerImage(null);
                             log.postValue("[VIDEO]\nImage Failed\nno finger");
                             continue;
                         } else {

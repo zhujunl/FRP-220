@@ -10,17 +10,9 @@
 
 ### Open/Close Device
 
-You must turn on the device before you can perform other operations. When you click **OPEN**, most Android OS will pop up a system prompt box, please click **OK**. As shown below:
-
-<img src="./images/demo/sys_hint.png" alt="Android Hint" align="center" style="zoom:50%;" />
-
-After successfully turning on the device, all buttons will become active.
+You must check the device connection before you can perform other operations. When you click **Check Connected**After successfully turning on the device, all buttons will become active.
 
 ### Capture Setting
-
-**Lantent : **
-
-Checking `Lantent` indicates that you want to enable the lantent  fingerprint detection function, which can effectively suppress the influence of the residual fingerprints collected last time on this collection.
 
 **LFD:**
 
@@ -32,7 +24,7 @@ Checking `LFD` indicates that you want to enable the live fingerprint detection 
 
 ### Capture
 
-Click `Capture`, the capture device will light up the red fill light. Then, place the user's finger on the collection surface of FPR-220. After the collection is complete, the log area will display the results. As shown below:
+Click `Capture`, Then, place the user's finger on the collection surface of FPR-220. After the collection is complete, the log area will display the results. As shown below:
 
 <img src="./images/demo/capture_result.png" alt="Main View" style="zoom:45%;" />
 
@@ -140,4 +132,4 @@ The program will export the `current image` as template to external storage.
 
 > The `current image` refers to the image being displayed on the `ImageView` and will not be reacquired
 >
-> Default location :/sdcard/Android/data/com.miaxis.sm93m/files/
+> Default location :/sdcard/Android/data/com.miaxis.fpr220/files/

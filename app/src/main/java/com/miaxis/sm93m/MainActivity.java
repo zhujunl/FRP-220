@@ -98,10 +98,10 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         requestPermissions(this);
 
         //Power supply for Miaxis equipment
-        Intent intent = new Intent("com.miaxis.power");
-        intent.putExtra("type",0x12);
-        intent.putExtra("value",true);
-        sendBroadcast(intent);
+        //Intent intent = new Intent("com.miaxis.power");
+        //intent.putExtra("type",0x12);
+        //intent.putExtra("value",true);
+        //sendBroadcast(intent);
     }
 
     @Override

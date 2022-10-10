@@ -1,4 +1,8 @@
 ----------------------------
+V1.0.2  zhukun 2022-10-10
+        1.fix 230400 baud rate bug.
+
+----------------------------
 V1.0.1  zhukun 2022-09-30
         1.implement basic functions such as:check connected, detect finger, capture, video.
         2.added enroll, verify, search, remove, clear, upload, download and other functions of the lower computer and the upper computer.

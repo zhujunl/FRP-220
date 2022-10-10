@@ -1,16 +1,16 @@
-# SM-93M Getting Startded Guide
+# FPR-220 Getting Startded Guide
 
 [TOC]
 
 ## 1.Introduction
 
-Welcome to use SM-93M SDK. This document will introduce how to use SM-93M SDK for development in Android.
+Welcome to use FPR-220 SDK. This document will introduce how to use FPR-220 SDK for development in Android.
 
 
 
 ## 2.SDK Contents
 
-The SDK contains libraries and demo needed for the development of SM-93M,Contains the following directories:
+The SDK contains libraries and demo needed for the development of FPR-220,Contains the following directories:
 
 - /apk or /bin
 
@@ -60,7 +60,7 @@ Then, copy the aar from the demo project to the lib directory of your project, a
 >
 > `JustouchApi.aar` is used for fingerprint algorithm.
 >
-> `SM93MDriverApi.aar` is used to access `SM-93M` Device.
+> `FPR-220_Driver.aar` is used to access `FPR-220` Device.
 
 #### 3.1.4. Congratulations
 
@@ -68,43 +68,22 @@ Congratulations, you have completed all the preparations, then you can refer to 
 
 ### 3.2 Sample Code
 
-#### 3.2.1 SM-93M Driver API
+#### 3.2.1 FPR-220 Driver API
 
-Get a instance of SM-93M driver API :
+Get a instance of FPR-220 driver API :
 ```java
-SM93MApi mDriverApi = SM93MApiFactory.getInstance(getApplicationContext());
+mxComFingerDriver mDriverApi = new mxComFingerDriver();
 // do something with mDriverApi
 ```
 
-Open/Close SM-93M device :
+Capture fingerprint image from FPR-220 device:
 
 ```java
-int fd = mDriverApi.openDevice();
-if (fd >= 0) {
-  // Open successfully !
-  // 0 means it has been opened before
-} else {
-  // process error code 
-}
-```
-
-Capture fingerprint image from SM-93M device:
-
-```java
-CaptureConfig captureConfig = new CaptureConfig.Builder()
-                .setLfdLevel(0)
-                .setLatentLevel(0)
-                .setTimeout(8000)
-                .setAreaScore(45)
-                .setPreviewCallBack(previewCallBack)
-                // AES/ECB/PKCS5Padding
-                //.setAESConfig(new AESConfig.Builder().setKey("1234567890123456").build())
-                //.setAESStatus(CaptureConfig.AES_HOST)
-                .build();
-MxResult<MxImage> image = mDriverApi.getImage(captureConfig);
-if (imageResult.isSuccess()) {
+byte[] image = new byte[256 * 360];
+int imageResult = mDriverApi.mxGetFingerImageWithCompression(path, rate, 5000, image);
+if (imageResult == 0) {
   // Capture successfully !
-  MxImage mxImage = imageResult.data;
+  MxImage mxImage = new MxImage(0, 256, 360, 1, image);
   // Convert raw image to Android bitmap
   byte[] imageDate = new byte[mxImage.width * mxImage.height + 1078];
   BmpLoader.Raw2Bmp(imageDate, mxImage.data, mxImage.width, mxImage.height);
@@ -128,7 +107,7 @@ JustouchFingerAPI mJustouchApi = new JustouchFingerAPI();
 Create FMR : 
 
 ```java
-MxImage image ; // capture from SM-93M
+MxImage image ; // capture from FPR-220
 byte[] fmrBuffer = new byte[1024];//Must be 1024 bytes
 int result = mJustouchApi.createTemplateISO(image.data, image.width, image.height, fmrBuffer);
 if (result >= 0) {
@@ -158,7 +137,7 @@ if (score >= 45) { // Suggest 45 pass
 
 > NOTE: 
 >
-> When Justouch works with SM-93M, there is no need to call initialization
+> When Justouch works with FPR-220, there is no need to call initialization
 
 
 
