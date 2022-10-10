@@ -46,18 +46,13 @@ public class FragmentTemplateHost extends BaseBindingFragment<FragmentTemplateHo
         binding.hostSpTemplate.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (mMainViewModel.communicationType.getValue() == null) return;
-                if (mMainViewModel.communicationType.getValue() == 0) {
-                    if (mMainViewModel.hostFeatureType.getValue() == null) return;
-                    if (mMainViewModel.hostFeatureType.getValue() != position) {
-                        mMainViewModel.hostFeatureType.setValue(position);
-                        mMainViewModel.changeAlgorithm(getResources().getStringArray(R.array.template)[position]);
-                    }
-                    if (isFirst) {
-                        isFirst = false;
-                        mMainViewModel.changeAlgorithm(getResources().getStringArray(R.array.template)[position]);
-                    }
-                } else {
+                if (mMainViewModel.hostFeatureType.getValue() == null) return;
+                if (mMainViewModel.hostFeatureType.getValue() != position) {
+                    mMainViewModel.hostFeatureType.setValue(position);
+                    mMainViewModel.changeAlgorithm(getResources().getStringArray(R.array.template)[position]);
+                }
+                if (isFirst) {
+                    isFirst = false;
                     mMainViewModel.changeAlgorithm(getResources().getStringArray(R.array.template)[position]);
                 }
             }
@@ -65,12 +60,6 @@ public class FragmentTemplateHost extends BaseBindingFragment<FragmentTemplateHo
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
-        });
-
-        mMainViewModel.featureType.observe(Objects.requireNonNull(getActivity()), position -> {
-            if (mMainViewModel.communicationType.getValue() == null) return;
-            if (mMainViewModel.communicationType.getValue() != 1) return;
-            mMainViewModel.hostFeatureType.setValue(position);
         });
     }
 

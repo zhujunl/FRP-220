@@ -44,7 +44,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:enabled="@{!viewModel.opened &amp;&amp; !viewModel.busy &amp;&amp; viewModel.firstInit}"
+                    android:enabled="false"
                     android:text="@string/text_usb"
                     android:textColor="#000"
                     tools:checked="true" />
@@ -54,7 +54,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:enabled="@{!viewModel.opened &amp;&amp; !viewModel.busy &amp;&amp; viewModel.firstInit}"
+                    android:enabled="false"
                     android:text="@string/text_uart"
                     android:textColor="#000" />
 

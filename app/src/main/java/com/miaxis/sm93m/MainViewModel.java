@@ -60,8 +60,8 @@ public class MainViewModel extends ViewModel {
     public MutableLiveData<Boolean> lfd = new MutableLiveData<>(false);
     public MutableLiveData<Boolean> nfiq = new MutableLiveData<>(false);
     public MutableLiveData<Integer> nfiqLevel = new MutableLiveData<>(2);
-    public MutableLiveData<String> comPath = new MutableLiveData<>("/dev/ttyHSL1");
-    public MutableLiveData<Integer> baudRate = new MutableLiveData<>(4);
+    public MutableLiveData<String> comPath = new MutableLiveData<>("/dev/ttyHSL2");
+    public MutableLiveData<Integer> baudRate = new MutableLiveData<>(7);
     public int[] baudRateValue = {9600, 19200, 38400, 57600, 115200, 230400, 460800, 921600};
     private int baudRateOld = 0;
     public MutableLiveData<Boolean> firstInit = new MutableLiveData<>(true);
@@ -103,7 +103,11 @@ public class MainViewModel extends ViewModel {
                 baudRateOld = rate;
                 opened.postValue(true);
             } else {
-                log.postValue("[CHECK CONNECTED]\nFailed\n" + result);
+                if (result == 0x54){
+                    log.postValue("[CHECK CONNECTED]\nFailed\nTimeout");
+                } else {
+                    log.postValue("[CHECK CONNECTED]\nFailed\n" + result);
+                }
             }
             busy.postValue(false);
         });
@@ -118,7 +122,11 @@ public class MainViewModel extends ViewModel {
             int rate = baudRateValue[baudRate.getValue()];
             int result = mFingerDriverApi.mxSetFingerBaudRate(path, baudRateOld, 3000, baudRate.getValue() + 1);
             if (result != 0) {
-                log.postValue("[SET BAUD RATE]\nFailed\nFAIL Code: " + result);
+                if (result == -3){
+                    log.postValue("[SET BAUD RATE]\nFailed\nTimeout");
+                } else {
+                    log.postValue("[SET BAUD RATE]\nFailed\nFAIL Code: " + result);
+                }
             } else {
                 baudRateOld = rate;
                 log.postValue("[SET BAUD RATE]\nSuccess");
@@ -240,7 +248,11 @@ public class MainViewModel extends ViewModel {
                 showFingerImage(result);
                 log.postValue("[CAPTURE]\nSuccess\nTime: " + (endTime - startTime) + "ms");
             } else {
-                log.postValue("[CAPTURE]\nFailed\nFAIL Code: " + result.error);
+                if (result.error == -3) {
+                    log.postValue("[VIDEO]\nNFIQ Failed\nTimeout");
+                } else {
+                    log.postValue("[CAPTURE]\nFailed\nFAIL Code: " + result.error);
+                }
             }
             busy.postValue(false);
         });
@@ -248,46 +260,70 @@ public class MainViewModel extends ViewModel {
 
     public void viewOn() {
         if (video.getValue() == null || !video.getValue()) {
-            video.postValue(true);
-            //executor.execute(() -> {
-            //    busy.postValue(true);
-            //    log.postValue(null);
-            //    bm.postValue(null);
-            //    templateMxImage = null;
-            //    mSm93MApi.lamp(0, 1);
-            //    while (video.getValue()) {
-            //        long st = System.currentTimeMillis();
-            //
-            //        CaptureConfig.Builder captureConfigBuilder = new CaptureConfig.Builder()
-            //                .setNfiqLevel(Boolean.TRUE.equals(nfiq.getValue()) ? (nfiqLevel.getValue() + 1) : 0)
-            //                .setLatentLevel(Boolean.TRUE.equals(latent.getValue()) ? 3 : 0)
-            //                .setLfdLevel(Boolean.TRUE.equals(lfd.getValue()) ? 3 : 0)
-            //                .setTimeout(CaptureConfig.DEFAULT_TIMEOUT)
-            //                .setAreaScore(CaptureConfig.DEFAULT_AREA_SCORE)
-            //                .setPreviewCallBack(previewCallBack);
-            //        CaptureConfig captureConfig = captureConfigBuilder.build();
-            //        MxResult<MxImage> result = mSm93MApi.getVideoImage(captureConfig);
-            //
-            //        if (result.getData() != null && result.getData().data != null){
-            //            showFingerImage(result.getData());
-            //        }
-            //        if (result.isSuccess()) {
-            //            long imageQualityTime = System.currentTimeMillis();
-            //            int imageQuality = mJustouchApi.getImageQuality(result.getData().data, result.getData().width, result.getData().height);
-            //            long imageQualityTimeEnd = System.currentTimeMillis();
-            //            log.postValue("[VIDEO]\nSuccess\nImage Score: " + imageQuality + "\nArea : " +
-            //                    result.getData().tag + "\n" + result.getMsg() + "\nQuality Time : " +
-            //                    (imageQualityTimeEnd - imageQualityTime) +"ms\nAll Time : " +
-            //                    (imageQualityTimeEnd - st) + "ms");
-            //        } else {
-            //            //video.postValue(false);
-            //            log.postValue(transform("[VIDEO]\nFailed", result));
-            //        }
-            //
-            //    }
-            //    mSm93MApi.lamp(0, 0);
-            //    busy.postValue(false);
-            //});
+            video.setValue(true);
+            executor.execute(() -> {
+                busy.postValue(true);
+                log.postValue(null);
+                bm.postValue(null);
+                templateMxImage = null;
+                while (video.getValue()) {
+                    long startTime = System.currentTimeMillis();
+                    MxImage result = getImage();
+                    long endTime = System.currentTimeMillis();
+                    if (result.error != 0) {
+                        if (result.error == -3 || result.error == -6) {
+                            log.postValue("[VIDEO]\nImage Failed\nno finger");
+                            continue;
+                        } else {
+                            log.postValue("[VIDEO]\nImage Failed\nFAIL Code: " + result.error);
+                            video.postValue(false);
+                            break;
+                        }
+                    }
+                    showFingerImage(result);
+                    long nfiqTime = 0;
+                    if (nfiq.getValue() != null && nfiq.getValue() && nfiqLevel.getValue() != null) {
+                        int nfiq = mJustouchApi.getNFIQ(result.data, result.width, result.height);
+                        nfiqTime = System.currentTimeMillis();
+                        if (nfiq < 0) {
+                            log.postValue("[VIDEO]\nNFIQ Failed\nFAIL Code: " + nfiq);
+                            continue;
+                        }
+                        if (nfiq > nfiqLevel.getValue()) {
+                            log.postValue("[VIDEO]\nFailed\nNFIQ reject");
+                            continue;
+                        }
+                    }
+                    long lfdStartTime = 0;
+                    long lfdEndTime = 0;
+                    if (lfd.getValue() != null && lfd.getValue()) {
+                        lfdStartTime = System.currentTimeMillis();
+                        int[] lfdResult = {0};
+                        int i = FingerLiveApi.fingerLiveWithLevel(result.data, result.width, result.height, 3, lfdResult);
+                        lfdEndTime = System.currentTimeMillis();
+                        if (i != 0) {
+                            log.postValue("[VIDEO]\nLFD Failed\nFAIL Code: " + i);
+                            busy.postValue(false);
+                            continue;
+                        }
+                        if (lfdResult[0] == 0) {
+                            log.postValue("[VIDEO]\nFailed\nLFD reject");
+                            busy.postValue(false);
+                            continue;
+                        }
+                    }
+                    StringBuilder msg = new StringBuilder();
+                    msg.append("[VIDEO]\nSuccess\nImage Time: ").append(endTime - startTime).append("ms");
+                    if (nfiqTime != 0) {
+                        msg.append("\n").append("NFIQ Time: ").append(nfiqTime - endTime).append("ms");
+                    }
+                    if (lfdStartTime != 0) {
+                        msg.append("\n").append("LFD Time: ").append(lfdEndTime - lfdStartTime).append("ms");
+                    }
+                    log.postValue(msg.toString());
+                }
+                busy.postValue(false);
+            });
         }
     }
 

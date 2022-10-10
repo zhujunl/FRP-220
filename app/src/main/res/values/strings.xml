@@ -24,7 +24,7 @@
     <string name="check_save">Auto Save</string>
 
     <string name="text_com">COM  :</string>
-    <string name="text_com_default">/dev/ttyHSL1</string>
+    <string name="text_com_default">/dev/ttyHSL2</string>
     <string name="text_BAUDRATE">BAUDRATE</string>
 
     <string name="text_detect_finger">Detect Finger</string>

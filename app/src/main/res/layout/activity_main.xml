@@ -148,7 +148,7 @@
             android:id="@+id/btn_video"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:enabled="@{(viewModel.video || (viewModel.opened &amp;&amp; !viewModel.busy)) &amp;&amp; viewModel.communicationType != 1}"
+            android:enabled="@{(viewModel.video || (viewModel.opened &amp;&amp; !viewModel.busy))}"
             android:onClick="@{onClickListener}"
             android:text="@{viewModel.video? @string/button_video_on : @string/button_video_off}"
             android:textAllCaps="false"

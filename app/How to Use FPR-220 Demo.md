@@ -1,4 +1,4 @@
-# How to Use SM-93M Demo
+# How to Use FPR-220 Demo
 
 [TOC]
 
@@ -32,7 +32,7 @@ Checking `LFD` indicates that you want to enable the live fingerprint detection 
 
 ### Capture
 
-Click `Capture`, the capture device will light up the red fill light. Then, place the user's finger on the collection surface of SM-93M. After the collection is complete, the log area will display the results. As shown below:
+Click `Capture`, the capture device will light up the red fill light. Then, place the user's finger on the collection surface of FPR-220. After the collection is complete, the log area will display the results. As shown below:
 
 <img src="./images/demo/capture_result.png" alt="Main View" style="zoom:45%;" />
 
@@ -40,7 +40,7 @@ Click `Capture`, the capture device will light up the red fill light. Then, plac
 
 ### DEVICE SN
 
-Return SM-93M serial number
+Return FPR-220 serial number
 
 ### SDK Version
 
