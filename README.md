@@ -2,7 +2,7 @@
 
 ## Demo：V1.0.3｜SDK：V2.0.4.20221017 
 
-SDK源代码：http://192.168.11.216/androidsdk/uart/fpr220comdriver
+SDK源代码：http://192.168.11.216/androidsdk/uart/fpr220comdriver/-/tree/dev_fpr-220
 
 提测源代码：[https://devops03.miaxishz.com/svn/基线源代码/产品开发中心/指纹类/Android/FPR-220 V3.0/FPR-220_Demo V1.0.3.20221017.zip](https://devops03.miaxishz.com/svn/基线源代码/产品开发中心/指纹类/Android/FPR-220 V3.0)
 
@@ -17,7 +17,7 @@ SDK源代码：http://192.168.11.216/androidsdk/uart/fpr220comdriver
 
 ## Demo：V1.0.2｜SDK：V2.0.3.20221010 
 
-SDK源代码：http://192.168.11.216/androidsdk/uart/fpr220comdriver
+SDK源代码：http://192.168.11.216/androidsdk/uart/fpr220comdriver/-/tree/dev_fpr-220
 
 提测源代码：[https://devops03.miaxishz.com/svn/基线源代码/产品开发中心/指纹类/Android/FPR-220 V3.0/FPR-220_Demo V1.0.2.20221010.zip](https://devops03.miaxishz.com/svn/基线源代码/产品开发中心/指纹类/Android/FPR-220 V3.0)
 
