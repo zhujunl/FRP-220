@@ -61,8 +61,8 @@ public class MainViewModel extends ViewModel {
     public MutableLiveData<Boolean> nfiq = new MutableLiveData<>(false);
     public MutableLiveData<Integer> nfiqLevel = new MutableLiveData<>(2);
     public MutableLiveData<String> comPath = new MutableLiveData<>("/dev/ttyHSL2");
-    public MutableLiveData<Integer> baudRate = new MutableLiveData<>(7);
-    public int[] baudRateValue = {9600, 19200, 38400, 57600, 115200, 230400, 460800, 921600};
+    public MutableLiveData<Integer> baudRate = new MutableLiveData<>(3);
+    public int[] baudRateValue = {115200, 230400, 460800, 921600};
     private int baudRateOld = 0;
     public MutableLiveData<Boolean> firstInit = new MutableLiveData<>(true);
     private MxImage templateMxImage;
@@ -120,7 +120,7 @@ public class MainViewModel extends ViewModel {
             String path = comPath.getValue();
             if (baudRate.getValue() == null) return;
             int rate = baudRateValue[baudRate.getValue()];
-            int result = mFingerDriverApi.mxSetFingerBaudRate(path, baudRateOld, 3000, baudRate.getValue() + 1);
+            int result = mFingerDriverApi.mxSetFingerBaudRate(path, baudRateOld, 3000, baudRate.getValue() + 1 + 4);
             if (result != 0) {
                 if (result == -3){
                     log.postValue("[SET BAUD RATE]\nFailed\nTimeout");
