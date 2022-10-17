@@ -1,4 +1,10 @@
 ----------------------------
+V1.0.3  zhukun 2022-10-17
+        1.fix capture error with baud rate less than 115200.
+        2.the maximum capacity of the lower computer is relaxed to 1000.
+        3.it takes longer for the lower computer to search.
+
+----------------------------
 V1.0.2  zhukun 2022-10-10
         1.fix 230400 baud rate bug.
 

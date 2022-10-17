@@ -66,7 +66,7 @@ public class MainViewModel extends ViewModel {
     private int baudRateOld = 0;
     public MutableLiveData<Boolean> firstInit = new MutableLiveData<>(true);
     private MxImage templateMxImage;
-    private int capacity = 128;
+    private int capacity = 1000;
 
     /**
      * Minimum acceptable number of fingerprint minutiae points
@@ -198,6 +198,7 @@ public class MainViewModel extends ViewModel {
             }
         } else {
             byte[] image = new byte[256 * 360];
+            Log.d(TAG, "rate is " + rate);
             int result = mFingerDriverApi.mxGetFingerImage(path, rate, 5000, image);
             if (result == 0) {
                 MxImage mxImage = new MxImage(0, 256, 360, 1, image);
@@ -249,7 +250,7 @@ public class MainViewModel extends ViewModel {
                 log.postValue("[CAPTURE]\nSuccess\nTime: " + (endTime - startTime) + "ms");
             } else {
                 if (result.error == -3) {
-                    log.postValue("[VIDEO]\nNFIQ Failed\nTimeout");
+                    log.postValue("[VIDEO]\nFailed\nTimeout");
                 } else {
                     log.postValue("[CAPTURE]\nFailed\nFAIL Code: " + result.error);
                 }
@@ -488,7 +489,7 @@ public class MainViewModel extends ViewModel {
                 int i1 = mFingerDriverApi.mxGenTz(path, rate, (short) 0, (short) 0);
                 if (i1 == 0) {
                     short[] searchResult = {0};
-                    int i2 = mFingerDriverApi.mxSearch(path, rate, (short) 0, (short) 0, (short) capacity, searchResult);
+                    int i2 = mFingerDriverApi.mxSearch(path, rate, (short) 0, (short) 0, (short) (capacity), searchResult);
                     if (i2 == 0) {
                         log.postValue("[SEARCH]\nSuccess\nBufferId: " + searchResult[0] + "\nTime: " + (System.currentTimeMillis() - st) + "ms");
                     } else {
