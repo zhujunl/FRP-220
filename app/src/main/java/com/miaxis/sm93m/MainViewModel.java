@@ -250,10 +250,54 @@ public class MainViewModel extends ViewModel {
                 log.postValue("[CAPTURE]\nSuccess\nTime: " + (endTime - startTime) + "ms");
             } else {
                 if (result.error == -3) {
-                    log.postValue("[VIDEO]\nFailed\nTimeout");
+                    log.postValue("[CAPTURE]\nFailed\nTimeout");
                 } else {
                     log.postValue("[CAPTURE]\nFailed\nFAIL Code: " + result.error);
                 }
+            }
+            busy.postValue(false);
+        });
+    }
+
+    public void getFinalImage1() {
+        log.setValue(null);
+        busy.setValue(true);
+        bm.setValue(null);
+        executor.execute(() -> {
+            templateMxImage = null;
+            String path = comPath.getValue();
+            if (baudRate.getValue() == null || imageSizeRadio.getValue() == null) return;
+            int rate = baudRateValue[baudRate.getValue()];
+            long startTime = System.currentTimeMillis();
+            long totalTime = System.currentTimeMillis() + 8000;
+            boolean hasFinger = false;
+            while (System.currentTimeMillis() < totalTime) {
+                int[] area = {0};
+                int i = mFingerDriverApi.mxGetImageAndArea(path, rate, area);
+                if (i != 0) {
+                    return;
+                }
+                if (area[0] > 45) {
+                    hasFinger = true;
+                    break;
+                }
+            }
+            if (hasFinger) {
+                long getTime = System.currentTimeMillis();
+                log.postValue("[CAPTURE]\nSuccess\nAcquisitionTime: " + (getTime - startTime) + "ms\nUploading fingerprint image");
+                byte[] image = new byte[256 * 360];
+                Log.d(TAG, "rate is " + rate);
+                int result = mFingerDriverApi.mxUploadFingerImage(path, rate, 5000, image);
+                if (result == 0) {
+                    MxImage mxImage = new MxImage(0, 256, 360, 1, image);
+                    showFingerImage(mxImage);
+                    long endTime = System.currentTimeMillis();
+                    log.postValue("[CAPTURE]\nSuccess\nAcquisitionTime: " + (getTime - startTime) + "ms\nUploadTime: " + (endTime - getTime) + "ms");
+                } else {
+                    log.postValue("[CAPTURE]\nFailed\nFAIL Code: " + result);
+                }
+            } else {
+                log.postValue("[CAPTURE]\nFailed\nTimeout");
             }
             busy.postValue(false);
         });

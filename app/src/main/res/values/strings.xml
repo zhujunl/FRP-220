@@ -94,6 +94,7 @@
     <string name="button_open">Check Connected</string>
     <string name="button_close">Close</string>
     <string name="button_capture">Capture</string>
+    <string name="button_capture_1">Capture 1</string>
     <string name="button_video">Video</string>
     <string name="button_video_on">Stop</string>
     <string name="button_video_off">Video</string>

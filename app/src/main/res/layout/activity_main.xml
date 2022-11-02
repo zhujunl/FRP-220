@@ -141,8 +141,21 @@
             android:text="@string/button_capture"
             android:textAllCaps="false"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@+id/btn_video"
+            app:layout_constraintRight_toLeftOf="@+id/btn_capture_1"
             app:layout_constraintTop_toBottomOf="@id/btn_open" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_capture_1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:enabled="@{viewModel.opened &amp;&amp; !viewModel.busy}"
+            android:onClick="@{onClickListener}"
+            android:text="@string/button_capture_1"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toBottomOf="@id/btn_capture"
+            app:layout_constraintLeft_toRightOf="@id/btn_capture"
+            app:layout_constraintRight_toLeftOf="@+id/btn_video"
+            app:layout_constraintTop_toTopOf="@id/btn_capture" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_video"
@@ -153,7 +166,7 @@
             android:text="@{viewModel.video? @string/button_video_on : @string/button_video_off}"
             android:textAllCaps="false"
             app:layout_constraintBottom_toBottomOf="@id/btn_capture"
-            app:layout_constraintLeft_toRightOf="@id/btn_capture"
+            app:layout_constraintLeft_toRightOf="@id/btn_capture_1"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@id/btn_capture" />
 

@@ -144,6 +144,8 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             mMainViewModel.checkConnected();
         } else if (id == mBinding.btnCapture.getId()) {
             mMainViewModel.getFinalImage();
+        } else if (id == mBinding.btnCapture1.getId()) {
+            mMainViewModel.getFinalImage1();
         } else if (id == mBinding.btnDetectFinger.getId()) {
             mMainViewModel.detectFinger();
         } else if (id == mBinding.btnVideo.getId()) {
