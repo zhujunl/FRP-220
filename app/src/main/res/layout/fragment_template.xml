@@ -46,7 +46,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:enabled="false"
-                android:text="ISO 19794–2:2005"
+                android:text="Follow the device"
                 app:layout_constraintBottom_toBottomOf="@id/tv_title_template"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toRightOf="@id/tv_title_template"

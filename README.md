@@ -1,5 +1,19 @@
 # FPR-220
 
+## Demo：V1.0.4｜SDK：V2.0.5.20221102 
+
+SDK源代码：http://192.168.11.216/androidsdk/uart/fpr220comdriver/-/tree/dev_fpr-220
+
+提测源代码：[https://devops03.miaxishz.com/svn/基线源代码/产品开发中心/指纹类/Android/FPR-220 V3.0/FPR-220_Demo V1.0.4.20221102.zip](https://devops03.miaxishz.com/svn/基线源代码/产品开发中心/指纹类/Android/FPR-220 V3.0)
+
+提测包：[https://devops03.miaxishz.com/svn/测试库/产品开发中心/SDK/Android/FPR-220 V3.0/Android FPR-220 UART ISO SDK-V1.0.4.20221102.zip](https://devops03.miaxishz.com/svn/测试库/产品开发中心/SDK/Android/FPR-220 V3.0)
+
+ **2022年11月02**
+
+1. 新增capture1（先采集指纹图片，后在上传图片）；
+
+   
+
 ## Demo：V1.0.3｜SDK：V2.0.4.20221017 
 
 SDK源代码：http://192.168.11.216/androidsdk/uart/fpr220comdriver/-/tree/dev_fpr-220
@@ -10,7 +24,7 @@ SDK源代码：http://192.168.11.216/androidsdk/uart/fpr220comdriver/-/tree/dev_
 
  **2022年10月17**
 
-1. 修复波特率小于115200的时候的传图失败；
+1. 删除低于115200的波特率；
 2. 下位机容量直接开放到1000;
 3. 下位机超时时间默认改成3000ms;
 4. 下位机的特征是1000个的时候，搜索大概5.2s，超时时间改成3*5s;
